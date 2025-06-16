@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { initMongoConnection } from '../db/initMongoConnection.js';
-import { Contact } from '../models/contact.js';
+import Contact from '../db/models/contact.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
