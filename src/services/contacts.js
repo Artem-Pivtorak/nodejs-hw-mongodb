@@ -1,11 +1,20 @@
 import mongoose from "mongoose";
-import Contact from "../db/models/contact.js";
+import { Contact } from "../db/models/contact.js";
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-export const getAllContacts = () => {
-  return Contact.find();
+export const getAllContacts = ({ filter = {}, sortBy = "name", sortOrder = "asc", skip = 0, limit = 10 }) => {
+  return Contact
+    .find(filter)
+    .sort({ [sortBy]: sortOrder === "desc" ? -1 : 1 })
+    .skip(skip)
+    .limit(limit);
 };
+
+export const countContacts = (filter = {}) => {
+  return Contact.countDocuments(filter);
+};
+
 
 export const getContactById = (id) => {
   if (!isValidObjectId(id)) return null;
