@@ -4,6 +4,10 @@ import pino from 'pino';
 import contactsRouter from './routes/contacts.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
+import authRouter from './routes/auth.js';
+import authenticate from './middlewares/authenticate.js';
+
+
 
 const logger = pino();
 
@@ -13,7 +17,9 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.use('/contacts', contactsRouter);
+  app.use('/auth', authRouter);
+
+  app.use('/contacts', authenticate, contactsRouter);
 
   app.use(notFoundHandler);
 
@@ -24,3 +30,4 @@ export const setupServer = () => {
     logger.info(`Server is running on port ${PORT}`);
   });
 };
+

@@ -3,13 +3,14 @@ import { Contact } from "../db/models/contact.js";
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-export const getAllContacts = ({ filter = {}, sortBy = "name", sortOrder = "asc", skip = 0, limit = 10 }) => {
+export const getAllContacts = ({ filter, sortBy, sortOrder, skip, limit }) => {
   return Contact
     .find(filter)
-    .sort({ [sortBy]: sortOrder === "desc" ? -1 : 1 })
+    .sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
     .skip(skip)
     .limit(limit);
 };
+
 
 export const countContacts = (filter = {}) => {
   return Contact.countDocuments(filter);

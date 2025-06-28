@@ -11,7 +11,7 @@ export const getAllContacts = async (req, res) => {
     isFavourite
   } = req.query;
 
-  const filter = {};
+  const filter = { userId: req.user._id };
   if (type) filter.contactType = type;
   if (isFavourite !== undefined) filter.isFavourite = isFavourite === "true";
 
@@ -57,13 +57,20 @@ export const getContactById = async (req, res) => {
 
 
 export const createContact = async (req, res) => {
-  const newContact = await contactsService.createContact(req.body);
+  const contactData = {
+    ...req.body,
+    userId: req.user._id
+  };
+  const newContact = await contactsService.createContact(contactData);
   res.status(201).json({
-    status: 201,
-    message: "Successfully created a contact!",
-    data: newContact,
-  });
+  status: 201,
+  message: "Successfully created a contact!",
+  data: newContact,
+});
+
+
 };
+
 
 export const updateContact = async (req, res) => {
   const { contactId } = req.params;
@@ -84,3 +91,4 @@ export const deleteContact = async (req, res) => {
 
   res.status(204).send();
 };
+

@@ -14,6 +14,9 @@ import {
   updateContactSchema
 } from "../schemas/contacts.js";
 
+import authenticate from '../middlewares/authenticate.js';
+
+
 const router = express.Router();
 
 // Отримати всі контакти (з пагінацією, фільтрами)
@@ -30,5 +33,10 @@ router.patch('/:contactId', isValidId, validateBody(updateContactSchema), ctrlWr
 
 // Видалити контакт — перевіряємо id
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContact));
+
+router.get("/", authenticate, ctrlWrapper(getAllContacts));
+
+router.post("/", authenticate, validateBody(createContactSchema), ctrlWrapper(createContact));
+
 
 export default router;
