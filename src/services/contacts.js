@@ -17,21 +17,21 @@ export const countContacts = (filter = {}) => {
 };
 
 
-export const getContactById = (id) => {
-  if (!isValidObjectId(id)) return null;
-  return Contact.findById(id);
+export const getContactById = async (contactId, userId) => {
+  return await Contact.findOne({ _id: contactId, userId });
 };
+
 
 export const createContact = (contactData) => {
   return Contact.create(contactData);
 };
 
-export const updateContact = (id, updates) => {
-  if (!isValidObjectId(id)) return null;
-  return Contact.findByIdAndUpdate(id, updates, { new: true });
+export const updateContact = async (contactId, userId, data) => {
+  return await Contact.findOneAndUpdate({ _id: contactId, userId }, data, { new: true });
 };
 
-export const deleteContact = (id) => {
-  if (!isValidObjectId(id)) return null;
-  return Contact.findByIdAndDelete(id);
+
+export const deleteContact = async (contactId, userId) => {
+  return await Contact.findOneAndDelete({ _id: contactId, userId });
 };
+

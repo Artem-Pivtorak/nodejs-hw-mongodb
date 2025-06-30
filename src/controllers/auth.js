@@ -31,46 +31,41 @@ export const register = async (req, res) => {
   });
 };
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) throw createError(401, 'Invalid credentials');
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw createError(401, 'Invalid credentials');
-
-  const accessToken = generateToken({ userId: user._id }, '15m');
-  const refreshToken = generateToken({ userId: user._id }, '30d');
-
-  await Session.deleteMany({ userId: user._id });
-  await Session.create({
-    userId: user._id,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
-    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-  });
-
-  res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' });
-
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully logged in an user!',
-    data: { accessToken }
-  });
-};
-
-export const logout = async (req, res) => {
-  const sessionId = req.cookies?.sid;
-
-  if (!sessionId) {
-    throw createError(401, "No session ID provided in cookies");
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return next(HttpError(401, 'Email or password is wrong'));
   }
 
-  await Session.findByIdAndDelete(sessionId);
-  res.clearCookie("sid");
-  res.status(204).send();
+  const payload = { userId: user._id };
+  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+
+  const session = await Session.create({ userId: user._id });
+
+  res
+    .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
+    .cookie('sessionId', session._id.toString(), { httpOnly: true, sameSite: 'strict' })
+    .json({ accessToken });
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    const sessionId = req.cookies.sessionId;
+    if (!sessionId) return next(HttpError(401, 'Not authorized'));
+
+    await Session.findByIdAndDelete(sessionId);
+
+    res
+      .clearCookie('refreshToken')
+      .clearCookie('sessionId')
+      .status(204)
+      .send();
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const refresh = async (req, res) => {
