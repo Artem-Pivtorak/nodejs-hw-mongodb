@@ -11,7 +11,7 @@ export const getAllContacts = async (req, res) => {
     isFavourite
   } = req.query;
 
-  const filter = {};
+  const filter = { userId: req.user._id };
   if (type) filter.contactType = type;
   if (isFavourite !== undefined) filter.isFavourite = isFavourite === "true";
 
@@ -45,7 +45,7 @@ export const getAllContacts = async (req, res) => {
 
 export const getContactById = async (req, res) => {
   const { contactId } = req.params;
-  const contact = await contactsService.getContactById(contactId);
+  const contact = await contactsService.getContactById(contactId, req.user._id);
   if (!contact) throw createError(404, "Contact not found");
 
   res.status(200).json({
@@ -55,19 +55,25 @@ export const getContactById = async (req, res) => {
   });
 };
 
-
 export const createContact = async (req, res) => {
-  const newContact = await contactsService.createContact(req.body);
+  const contactData = {
+    ...req.body,
+    userId: req.user._id
+  };
+  const newContact = await contactsService.createContact(contactData);
   res.status(201).json({
-    status: 201,
-    message: "Successfully created a contact!",
-    data: newContact,
-  });
+  status: 201,
+  message: "Successfully created a contact!",
+  data: newContact,
+});
+
+
 };
+
 
 export const updateContact = async (req, res) => {
   const { contactId } = req.params;
-  const updated = await contactsService.updateContact(contactId, req.body);
+  const updated = await contactsService.updateContact(contactId, req.user._id, req.body);
   if (!updated) throw createError(404, "Contact not found");
 
   res.status(200).json({
@@ -79,8 +85,9 @@ export const updateContact = async (req, res) => {
 
 export const deleteContact = async (req, res) => {
   const { contactId } = req.params;
-  const deleted = await contactsService.deleteContact(contactId);
+  const deleted = await contactsService.deleteContact(contactId, req.user._id);
   if (!deleted) throw createError(404, "Contact not found");
 
   res.status(204).send();
 };
+
