@@ -3,13 +3,29 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../db/models/user.js';
 import Session from '../db/models/session.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
-const generateToken = (payload, expiresIn) => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn });
+const generateTokens = (userId) => {
+  const accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 хв
+  const refreshTokenValidUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 днів
+
+  console.log('JWT_SECRET =', process.env.JWT_SECRET);
+
+  const accessToken = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '7d' });
+
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil,
+    refreshTokenValidUntil
+  };
 };
+
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -32,24 +48,36 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res, next) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return next(HttpError(401, 'Email or password is wrong'));
+    const user = await User.findOne({ email });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return next(createError(401, 'Email or password is wrong'));
+    }
+
+    const payload = { id: user._id };
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+
+    const now = new Date();
+    const session = await Session.create({
+      userId: user._id,
+      accessToken,
+      refreshToken,
+      accessTokenValidUntil: new Date(now.getTime() + 15 * 60 * 1000), // 15 хв
+      refreshTokenValidUntil: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 днів
+    });
+
+    res
+      .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
+      .cookie('sessionId', session._id.toString(), { httpOnly: true, sameSite: 'strict' })
+      .json({ accessToken });
+  } catch (err) {
+    next(err);
   }
-
-  const payload = { userId: user._id };
-  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
-  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
-
-  const session = await Session.create({ userId: user._id });
-
-  res
-    .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
-    .cookie('sessionId', session._id.toString(), { httpOnly: true, sameSite: 'strict' })
-    .json({ accessToken });
 };
+
 
 export const logout = async (req, res, next) => {
   try {
@@ -69,7 +97,7 @@ export const logout = async (req, res, next) => {
 };
 
 export const refresh = async (req, res) => {
-  const oldSessionId = req.cookies?.sid;
+  const oldSessionId = req.cookies?.sessionId;
 
   if (!oldSessionId) {
     throw createError(401, "No session ID found in cookies");

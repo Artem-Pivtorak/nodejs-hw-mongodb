@@ -15,7 +15,7 @@ const authenticate = async (req, res, next) => {
     }
     const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-    const session = await Session.findOne({ userId: payload.id, accessToken: token });
+    const session = await Session.findOne({ userId: payload.userId, accessToken: token });
     if (!session) throw createError(401, 'Invalid session');
 
     if (session.accessTokenValidUntil < new Date()) {
