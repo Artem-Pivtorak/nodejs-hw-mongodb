@@ -10,21 +10,22 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
 const generateTokens = (userId) => {
-  const accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 хв
-  const refreshTokenValidUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 днів
+  const accessTokenValidUntil = new Date(Date.now() + 1000 * 60 * 15); // 15 хв
+  const refreshTokenValidUntil = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 днів
 
-  console.log('JWT_SECRET =', process.env.JWT_SECRET);
+  const payload = { userId };
 
-  const accessToken = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '7d' });
+  const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 
   return {
     accessToken,
     refreshToken,
     accessTokenValidUntil,
-    refreshTokenValidUntil
+    refreshTokenValidUntil,
   };
 };
+
 
 
 export const register = async (req, res) => {
@@ -56,9 +57,10 @@ export const login = async (req, res, next) => {
       return next(createError(401, 'Email or password is wrong'));
     }
 
-    const payload = { id: user._id };
+    const payload = { userId: user._id };
+
     const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
-    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
     const now = new Date();
     const session = await Session.create({
@@ -69,10 +71,16 @@ export const login = async (req, res, next) => {
       refreshTokenValidUntil: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 днів
     });
 
-    res
-      .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
-      .cookie('sessionId', session._id.toString(), { httpOnly: true, sameSite: 'strict' })
-      .json({ accessToken });
+res
+  .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
+  .cookie('sessionId', session._id.toString(), { httpOnly: true, sameSite: 'strict' })
+  .status(200)
+  .json({
+    status: 200,
+    message: 'Successfully logged in!',
+    data: { accessToken }
+  });
+
   } catch (err) {
     next(err);
   }
@@ -81,8 +89,8 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    const sessionId = req.cookies.sessionId;
-    if (!sessionId) return next(HttpError(401, 'Not authorized'));
+    const sessionId = req.cookies?.sessionId;
+if (!sessionId) return next(createError(401, 'No session ID in cookies'));
 
     await Session.findByIdAndDelete(sessionId);
 
@@ -98,6 +106,7 @@ export const logout = async (req, res, next) => {
 
 export const refresh = async (req, res) => {
   const oldSessionId = req.cookies?.sessionId;
+
 
   if (!oldSessionId) {
     throw createError(401, "No session ID found in cookies");
@@ -128,9 +137,9 @@ export const refresh = async (req, res) => {
     refreshTokenValidUntil,
   });
 
-  res.cookie("sid", newSession._id.toString(), {
+  res.cookie("sessionId", newSession._id.toString(), {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
 
@@ -140,3 +149,7 @@ export const refresh = async (req, res) => {
     data: { accessToken },
   });
 };
+
+
+
+

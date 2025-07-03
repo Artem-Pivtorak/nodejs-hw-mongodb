@@ -17,8 +17,16 @@ const logger = pino();
 export const setupServer = () => {
   const app = express();
 
+
+// одразу після app.use(express.json()) і app.use(cookieParser()), але до app.use('/auth', ...)
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
+
+
   app.use(cors());
   app.use(express.json());
+  app.use(cookieParser());
 
   app.use('/auth', authRouter);
 
@@ -28,11 +36,11 @@ export const setupServer = () => {
 
   app.use(errorHandler);
 
-  app.use(cookieParser());
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     logger.info(`Server is running on port ${PORT}`);
   });
 };
+
 
