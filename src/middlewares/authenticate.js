@@ -13,7 +13,8 @@ const authenticate = async (req, res, next) => {
     if (bearer !== 'Bearer' || !token) {
       throw createError(401, 'Not authorized');
     }
-    const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+
 
 
     const session = await Session.findOne({

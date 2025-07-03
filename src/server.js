@@ -18,7 +18,10 @@ export const setupServer = () => {
   const app = express();
 
 
-  app.get('/', (req, res) => res.json({ status: 'ok', uptime: process.uptime() }));
+// одразу після app.use(express.json()) і app.use(cookieParser()), але до app.use('/auth', ...)
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
 
 
   app.use(cors());
