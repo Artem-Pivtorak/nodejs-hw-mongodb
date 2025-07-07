@@ -66,6 +66,9 @@ export const createContact = async (req, res) => {
   message: "Successfully created a contact!",
   data: newContact,
 });
+if (req.file) {
+  req.body.photo = req.file.path;
+}
 
 
 };
@@ -81,6 +84,10 @@ export const updateContact = async (req, res) => {
     message: "Successfully patched a contact!",
     data: updated,
   });
+  if (req.file) {
+  req.body.photo = req.file.path;
+}
+
 };
 
 export const deleteContact = async (req, res) => {

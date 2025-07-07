@@ -4,10 +4,10 @@ import jwt from 'jsonwebtoken';
 import User from '../db/models/user.js';
 import Session from '../db/models/session.js';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
 dotenv.config();
 
-
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+const { JWT_SECRET, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, APP_DOMAIN } = process.env;
 
 const generateTokens = (userId) => {
   const accessTokenValidUntil = new Date(Date.now() + 1000 * 60 * 15); // 15 хв
@@ -151,5 +151,66 @@ export const refresh = async (req, res) => {
 };
 
 
+export const sendResetEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
 
+    const user = await User.findOne({ email });
+    if (!user) throw createError(404, 'User not found!');
 
+    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '5m' });
+
+    const resetLink = `${APP_DOMAIN}/reset-password?token=${token}`;
+
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: email,
+      subject: 'Password Reset',
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 5 minutes.</p>`,
+    });
+
+    res.status(200).json({
+      status: 200,
+      message: "Reset password email has been successfully sent.",
+      data: {},
+    });
+  } catch (err) {
+    console.error(err);
+    next(createError(500, 'Failed to send the email, please try again later.'));
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+
+    const { email } = jwt.verify(token, JWT_SECRET);
+
+    const user = await User.findOne({ email });
+    if (!user) throw createError(404, 'User not found!');
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    await Session.deleteMany({ userId: user._id });
+
+    res.status(200).json({
+      status: 200,
+      message: "Password has been successfully reset.",
+      data: {},
+    });
+  } catch (err) {
+    console.error(err);
+    next(createError(401, 'Token is expired or invalid.'));
+  }
+};
