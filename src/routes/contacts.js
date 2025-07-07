@@ -15,6 +15,9 @@ import {
 } from "../schemas/contacts.js";
 
 import authenticate from '../middlewares/authenticate.js';
+import { upload } from '../middlewares/upload.js';
+import { contactSchema } from '../schemas/contactSchema.js';
+
 
 
 const router = express.Router();
@@ -38,5 +41,8 @@ router.get("/", authenticate, ctrlWrapper(getAllContacts));
 
 router.post("/", authenticate, validateBody(createContactSchema), ctrlWrapper(createContact));
 
+router.post('/', authenticate, upload.single('photo'), validateBody(contactSchema), createContact);
+
+router.patch('/:contactId', authenticate, upload.single('photo'), updateContact);
 
 export default router;
