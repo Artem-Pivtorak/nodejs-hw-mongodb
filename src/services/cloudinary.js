@@ -34,3 +34,5 @@ export const uploadImage = async (filePath, folder = 'contacts') => {
 export const deleteImage = async (publicId) => {
   await cloudinary.uploader.destroy(publicId);
 };
+
+export default cloudinary;

@@ -15,7 +15,7 @@ import {
 } from "../schemas/contacts.js";
 
 import authenticate from '../middlewares/authenticate.js';
-import { upload } from '../middlewares/upload.js';
+import upload from '../middlewares/upload.js';
 import { contactSchema } from '../schemas/contactSchema.js';
 
 
@@ -31,15 +31,10 @@ router.get('/:contactId', isValidId, ctrlWrapper(getContactById));
 // Створити контакт — перед цим перевіримо тіло запиту
 router.post('/', validateBody(createContactSchema), ctrlWrapper(createContact));
 
-// Оновити контакт — перевіряємо id + тіло
-router.patch('/:contactId', isValidId, validateBody(updateContactSchema), ctrlWrapper(updateContact));
-
 // Видалити контакт — перевіряємо id
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContact));
 
 router.get("/", authenticate, ctrlWrapper(getAllContacts));
-
-router.post("/", authenticate, validateBody(createContactSchema), ctrlWrapper(createContact));
 
 router.post('/', authenticate, upload.single('photo'), validateBody(contactSchema), createContact);
 
