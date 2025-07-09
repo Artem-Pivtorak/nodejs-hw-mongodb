@@ -1,6 +1,7 @@
 import createError from 'http-errors';
 import * as contactsService from '../services/contacts.js';
 import cloudinary from '../services/cloudinary.js';
+import fs from 'fs/promises';
 
 export const getAllContacts = async (req, res) => {
   const {
@@ -56,25 +57,33 @@ export const getContactById = async (req, res) => {
 };
 
 export const createContact = async (req, res) => {
-  const contactData = {
-    ...req.body,
-    userId: req.user._id,
-  };
+  const { path: tempPath } = req.file;
+  let photoUrl = null;
 
-  if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'contacts',
+  try {
+    const result = await cloudinary.uploader.upload(tempPath, {
+  folder: 'contacts',
+});
+    photoUrl = result.secure_url;
+
+    await fs.unlink(tempPath);
+    const contactData = {
+      ...req.body,
+      userId: req.user._id,
+      photo: photoUrl,
+    };
+
+    const newContact = await contactsService.createContact(contactData);
+
+    res.status(201).json({
+      status: 201,
+      message: "Successfully created a contact!",
+      data: newContact,
     });
-    contactData.photo = result.secure_url;
+  } catch (error) {
+    await fs.unlink(tempPath);
+    throw createError(500, "Failed to upload photo to Cloudinary.");
   }
-
-  const newContact = await contactsService.createContact(contactData);
-
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: newContact,
-  });
 };
 
 export const updateContact = async (req, res) => {

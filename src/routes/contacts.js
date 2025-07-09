@@ -15,23 +15,15 @@ import {
 } from "../schemas/contacts.js";
 
 import authenticate from '../middlewares/authenticate.js';
-import upload from '../middlewares/upload.js';
+import { upload } from '../middlewares/upload.js';
 import { contactSchema } from '../schemas/contactSchema.js';
 
 
 
 const router = express.Router();
 
-// Отримати всі контакти (з пагінацією, фільтрами)
-router.get('/', ctrlWrapper(getAllContacts));
-
-// Отримати контакт по id — перед цим перевіримо правильність id
 router.get('/:contactId', isValidId, ctrlWrapper(getContactById));
 
-// Створити контакт — перед цим перевіримо тіло запиту
-router.post('/', validateBody(createContactSchema), ctrlWrapper(createContact));
-
-// Видалити контакт — перевіряємо id
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContact));
 
 router.get("/", authenticate, ctrlWrapper(getAllContacts));

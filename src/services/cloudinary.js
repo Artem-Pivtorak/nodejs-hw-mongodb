@@ -11,7 +11,6 @@ cloudinary.config({
   secure: true
 });
 
-// 🎯 Це storage для multer
 export const storage = new CloudinaryStorage({
   cloudinary,
   params: {
