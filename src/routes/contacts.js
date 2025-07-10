@@ -16,7 +16,6 @@ import {
 
 import authenticate from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/upload.js';
-import { contactSchema } from '../schemas/contactSchema.js';
 
 
 
@@ -28,8 +27,8 @@ router.delete('/:contactId', isValidId, ctrlWrapper(deleteContact));
 
 router.get("/", authenticate, ctrlWrapper(getAllContacts));
 
-router.post('/', authenticate, upload.single('photo'), validateBody(contactSchema), createContact);
+router.post('/', authenticate, upload.single('photo'), validateBody(createContactSchema), createContact);
 
-router.patch('/:contactId', authenticate, upload.single('photo'), updateContact);
+router.patch('/:contactId', authenticate, upload.single('photo'), validateBody(updateContactSchema), updateContact);
 
 export default router;
