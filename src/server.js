@@ -7,7 +7,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import authRouter from './routes/auth.js';
 import authenticate from './middlewares/authenticate.js';
 import cookieParser from 'cookie-parser';
-
+import apiDocsRouter from './routes/apiDocs.js';
 
 
 
@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 
   app.use(errorHandler);
 
+  app.use('/api-docs', apiDocsRouter);
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {

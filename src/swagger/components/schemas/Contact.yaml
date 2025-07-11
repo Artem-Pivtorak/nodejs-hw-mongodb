@@ -1,0 +1,28 @@
+type: object
+properties:
+  _id:
+    type: string
+    example: 64f1a7c8e4b3f1a2c7d2a3b4
+  name:
+    type: string
+    example: John Doe
+  phoneNumber:
+    type: string
+    example: "+380987654321"
+  email:
+    type: string
+    example: john.doe@example.com
+  photo:
+    type: string
+    example: "https://res.cloudinary.com/demo/image/upload/sample.jpg"
+  createdAt:
+    type: string
+    format: date-time
+    example: "2023-07-01T12:34:56Z"
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2023-07-02T15:20:00Z"
+required:
+  - name
+  - phoneNumber
