@@ -1,0 +1,11 @@
+get:
+  summary: Get current user info
+  responses:
+    '200':
+      description: Current user data
+      content:
+        application/json:
+          schema:
+            $ref: ../../components/schemas/User.yaml
+    '401':
+      description: Unauthorized
