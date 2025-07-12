@@ -1,37 +1,26 @@
 post:
   tags:
     - Auth
-  summary: Login a user
+  summary: Логін користувача
   operationId: loginUser
-  description: Logs in a user and returns a JWT token.
   requestBody:
     required: true
     content:
       application/json:
         schema:
           type: object
+          required:
+            - email
+            - password
           properties:
             email:
               type: string
               format: email
-              example: user@example.com
             password:
               type: string
               format: password
-              example: strongPassword123
-          required:
-            - email
-            - password
   responses:
     '200':
-      description: User logged in successfully
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/User.yaml
+      description: Успішний вхід
     '401':
-      description: Unauthorized (invalid credentials)
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/Error.yaml
+      description: Невірні облікові дані

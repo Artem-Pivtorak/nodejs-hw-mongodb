@@ -1,5 +1,10 @@
 post:
-  summary: User logout
+  tags:
+    - Auth
+  summary: Вихід користувача
+  operationId: logoutUser
+  security:
+    - bearerAuth: []
   responses:
     '204':
-      description: Logout successful
+      description: Вихід успішний

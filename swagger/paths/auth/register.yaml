@@ -1,10 +1,9 @@
 post:
   tags:
     - Auth
-  summary: Реєстрація нового користувача
+  summary: Реєстрація користувача
   operationId: registerUser
   requestBody:
-    description: Дані користувача для реєстрації
     required: true
     content:
       application/json:
@@ -17,13 +16,11 @@ post:
             email:
               type: string
               format: email
-              example: user@example.com
             password:
               type: string
               format: password
-              example: P@ssw0rd123
   responses:
     '201':
-      description: Користувач успішно зареєстрований
+      description: Успішна реєстрація
     '400':
-      description: Невірні дані або користувач вже існує
+      description: Некоректні дані

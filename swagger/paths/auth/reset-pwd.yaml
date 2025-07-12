@@ -1,43 +1,24 @@
 post:
   tags:
     - Auth
-  summary: Reset password
+  summary: Скинути пароль
   operationId: resetPassword
-  description: Resets the password using token from the email link.
   requestBody:
     required: true
     content:
       application/json:
         schema:
           type: object
-          properties:
-            token:
-              type: string
-              example: JWT.token.here
-            newPassword:
-              type: string
-              format: password
-              example: newStrongPassword123
           required:
             - token
             - newPassword
+          properties:
+            token:
+              type: string
+            newPassword:
+              type: string
   responses:
     '200':
-      description: Password reset successfully
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                example: 200
-              message:
-                type: string
-                example: Password reset successfully
+      description: Пароль оновлено
     '400':
-      description: Invalid or expired token
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/Error.yaml
+      description: Некоректний токен або пароль

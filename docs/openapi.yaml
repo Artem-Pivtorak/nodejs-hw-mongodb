@@ -9,6 +9,12 @@ info:
 servers:
   - url: http://localhost:3000
   - url: https://nodejs-hw-mongodb-production-6f89.up.railway.app/
+tags:
+  - name: Contacts
+    description: Операції з контактами
+  - name: Auth
+    description: Авторизація користувачів
+
 paths:
   /auth/register:
     $ref: ../swagger/paths/auth/register.yaml
@@ -39,3 +45,10 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    Contact:
+      $ref: ./components/schemas/Contact.yaml
+    User:
+      $ref: ./components/schemas/User.yaml
+    Error:
+      $ref: ./components/schemas/Error.yaml

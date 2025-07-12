@@ -1,9 +1,8 @@
 post:
   tags:
     - Contacts
-  summary: Create a new contact
+  summary: Створити новий контакт
   operationId: createContact
-  description: Adds a new contact for the authenticated user.
   security:
     - bearerAuth: []
   requestBody:
@@ -12,33 +11,22 @@ post:
       multipart/form-data:
         schema:
           type: object
-          properties:
-            name:
-              type: string
-              example: John Doe
-            phoneNumber:
-              type: string
-              example: "+1234567890"
-            email:
-              type: string
-              format: email
-              example: john.doe@example.com
-            photo:
-              type: string
-              format: binary
           required:
             - name
             - phoneNumber
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            phoneNumber:
+              type: string
+            photo:
+              type: string
+              format: binary
   responses:
     '201':
-      description: Contact created successfully
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/Contact.yaml
+      description: Контакт створено
     '400':
-      description: Validation error
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/Error.yaml
+      description: Некоректні дані
