@@ -1,0 +1,17 @@
+get:
+  summary: Get contact by ID
+  parameters:
+    - name: contactId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Contact data
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/Contact.yaml
+    '404':
+      description: Contact not found

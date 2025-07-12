@@ -1,0 +1,5 @@
+post:
+  summary: User logout
+  responses:
+    '204':
+      description: Logout successful
