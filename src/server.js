@@ -23,6 +23,9 @@ const logger = pino();
 export const setupServer = () => {
   const app = express();
 
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
@@ -43,7 +46,6 @@ app.get('/', (req, res) => {
 
   app.use('/api-docs', apiDocsRouter);
 
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
