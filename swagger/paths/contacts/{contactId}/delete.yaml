@@ -1,4 +1,3 @@
-delete:
   tags:
     - Contacts
   summary: Видалити контакт за ID

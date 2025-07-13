@@ -1,4 +1,3 @@
-get:
   tags:
     - Contacts
   summary: Отримати список контактів

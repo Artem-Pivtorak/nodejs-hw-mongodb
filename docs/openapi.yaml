@@ -45,10 +45,11 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-  schemas:
-    Contact:
-      $ref: ./components/schemas/Contact.yaml
-    User:
-      $ref: ./components/schemas/User.yaml
-    Error:
-      $ref: ./components/schemas/Error.yaml
+schemas:
+  Contact:
+    $ref: ../swagger/components/schemas/Contact.yaml
+  User:
+    $ref: ../swagger/components/schemas/User.yaml
+  Error:
+    $ref: ../swagger/components/schemas/Error.yaml
+
