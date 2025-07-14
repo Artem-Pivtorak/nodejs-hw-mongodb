@@ -1,9 +1,14 @@
+post:
   tags:
     - Auth
   summary: Вихід користувача
   operationId: logoutUser
-  security:
-    - bearerAuth: []
   responses:
     '204':
       description: Вихід успішний
+    '401':
+      description: Неавторизований доступ
+      content:
+        application/json:
+          schema:
+            $ref: ../../../docs/components/schemas/Error.yaml

@@ -1,25 +1,26 @@
-  tags:
-    - Auth
-  summary: Логін користувача
-  operationId: loginUser
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - email
-            - password
-          properties:
-            email:
-              type: string
-              format: email
-            password:
-              type: string
-              format: password
-  responses:
-    '200':
-      description: Успішний вхід
-    '401':
-      description: Невірні облікові дані
+  post:
+    tags:
+      - Auth
+    summary: Логін користувача
+    operationId: loginUser
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+    responses:
+      '200':
+        description: Успішний вхід
+      '401':
+        description: Невірні облікові дані

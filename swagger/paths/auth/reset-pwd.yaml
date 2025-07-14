@@ -1,23 +1,28 @@
-  tags:
-    - Auth
-  summary: Скинути пароль
-  operationId: resetPassword
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - token
-            - newPassword
-          properties:
-            token:
-              type: string
-            newPassword:
-              type: string
-  responses:
-    '200':
-      description: Пароль оновлено
-    '400':
-      description: Некоректний токен або пароль
+  post:
+    tags:
+      - Auth
+    summary: Скинути пароль
+    operationId: resetPassword
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - token
+              - newPassword
+            properties:
+              token:
+                type: string
+              newPassword:
+                type: string
+    responses:
+      '200':
+        description: Пароль оновлено
+      '400':
+        description: Некоректний токен або пароль
+        content:
+          application/json:
+            schema:
+              $ref: ../../../docs/components/schemas/Error.yaml

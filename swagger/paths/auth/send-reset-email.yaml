@@ -1,21 +1,32 @@
-  tags:
-    - Auth
-  summary: Надіслати лист для скидання пароля
-  operationId: sendResetEmail
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - email
-          properties:
-            email:
-              type: string
-              format: email
-  responses:
-    '200':
-      description: Лист відправлено
-    '500':
-      description: Помилка сервера
+  post:
+    tags:
+      - Auth
+    summary: Надіслати лист для скидання пароля
+    operationId: sendResetEmail
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                format: email
+    responses:
+      '200':
+        description: Лист відправлено
+      '400':
+        description: Некоректні дані запиту
+        content:
+          application/json:
+            schema:
+              $ref: ../../../docs/components/schemas/Error.yaml
+      '500':
+        description: Помилка сервера
+        content:
+          application/json:
+            schema:
+              $ref: ../../../docs/components/schemas/Error.yaml

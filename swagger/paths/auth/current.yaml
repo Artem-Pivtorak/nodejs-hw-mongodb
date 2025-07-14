@@ -1,11 +1,12 @@
-  tags:
-    - Auth
-  summary: Отримати поточного користувача
-  operationId: getCurrentUser
-  security:
-    - bearerAuth: []
-  responses:
-    '200':
-      description: Дані поточного користувача
-    '401':
-      description: Неавторизований доступ
+  get:
+    tags:
+      - Auth
+    summary: Отримати поточного користувача
+    operationId: getCurrentUser
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Дані поточного користувача
+      '401':
+        description: Неавторизований доступ

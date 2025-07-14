@@ -1,25 +1,30 @@
-  tags:
-    - Auth
-  summary: Реєстрація користувача
-  operationId: registerUser
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - email
-            - password
-          properties:
-            email:
-              type: string
-              format: email
-            password:
-              type: string
-              format: password
-  responses:
-    '201':
-      description: Успішна реєстрація
-    '400':
-      description: Некоректні дані
+  post:
+    tags:
+      - Auth
+    summary: Реєстрація користувача
+    operationId: registerUser
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+    responses:
+      '201':
+        description: Успішна реєстрація
+      '400':
+        description: Некоректні дані
+        content:
+          application/json:
+            schema:
+              $ref: ../../../docs/components/schemas/Error.yaml
