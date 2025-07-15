@@ -13,8 +13,30 @@
         type: string
   responses:
     '204':
-      description: Контакт видалено
+      description: Контакт успішно видалено (без тіла)
     '404':
       description: Контакт не знайдено
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Contact not found
     '401':
       description: Неавторизований доступ
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Unauthorized

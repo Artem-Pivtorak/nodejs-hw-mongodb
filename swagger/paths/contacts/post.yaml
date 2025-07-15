@@ -26,6 +26,43 @@
               format: binary
   responses:
     '201':
-      description: Контакт створено
-    '400':
-      description: Некоректні дані
+      description: Контакт успішно створено
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 201
+              message:
+                type: string
+                example: Successfully created a contact!
+              data:
+                $ref: '../../../docs/components/schemas/Contact.yaml'
+    '500':
+      description: Помилка завантаження фото
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: Failed to upload photo to Cloudinary.
+    '401':
+      description: Неавторизований доступ
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Unauthorized

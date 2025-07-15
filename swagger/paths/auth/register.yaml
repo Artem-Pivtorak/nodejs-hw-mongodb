@@ -21,10 +21,40 @@
                 format: password
     responses:
       '201':
-        description: Успішна реєстрація
-      '400':
-        description: Некоректні дані
+        description: Користувача успішно зареєстровано
         content:
           application/json:
             schema:
-              $ref: ../../../docs/components/schemas/Error.yaml
+              type: object
+              properties:
+                status:
+                  type: integer
+                  example: 201
+                message:
+                  type: string
+                  example: Successfully registered a user!
+                data:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: "64e2a1f8e1234567890abcd"
+                    name:
+                      type: string
+                      example: "Іван"
+                    email:
+                      type: string
+                      format: email
+                      example: "ivan@example.com"
+      '409':
+        description: Email вже використовується
+        content:
+          application/json:
+            schema:
+              $ref: '../../../docs/components/schemas/Error.yaml'
+      '400':
+        description: Некоректні дані запиту
+        content:
+          application/json:
+            schema:
+              $ref: '../../../docs/components/schemas/Error.yaml'

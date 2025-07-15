@@ -17,16 +17,30 @@
                 format: email
     responses:
       '200':
-        description: Лист відправлено
-      '400':
-        description: Некоректні дані запиту
+        description: Лист успішно відправлено
         content:
           application/json:
             schema:
-              $ref: ../../../docs/components/schemas/Error.yaml
+              type: object
+              properties:
+                status:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: Reset password email has been successfully sent.
+                data:
+                  type: object
+                  example: {}
+      '404':
+        description: Користувача з таким email немає
+        content:
+          application/json:
+            schema:
+              $ref: '../../../docs/components/schemas/Error.yaml'
       '500':
-        description: Помилка сервера
+        description: Помилка відправки листа
         content:
           application/json:
             schema:
-              $ref: ../../../docs/components/schemas/Error.yaml
+              $ref: '../../../docs/components/schemas/Error.yaml'

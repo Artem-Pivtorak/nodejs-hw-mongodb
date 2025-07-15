@@ -5,10 +5,10 @@ post:
   operationId: logoutUser
   responses:
     '204':
-      description: Вихід успішний
+      description: Успішно вийшли (cookies видалені)
     '401':
-      description: Неавторизований доступ
+      description: Відсутня сесія в cookies
       content:
         application/json:
           schema:
-            $ref: ../../../docs/components/schemas/Error.yaml
+            $ref: '../../../docs/components/schemas/Error.yaml'
