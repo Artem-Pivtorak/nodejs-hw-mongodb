@@ -9,19 +9,28 @@ import authenticate from './middlewares/authenticate.js';
 import cookieParser from 'cookie-parser';
 import apiDocsRouter from './routes/apiDocs.js';
 import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const swaggerDocument = YAML.load(path.join(__dirname, '../docs/openapi.yaml'));
+const swaggerJsonPath = path.join(__dirname, '../docs/swagger.json');
+const swaggerDocument = JSON.parse(fs.readFileSync(swaggerJsonPath, 'utf-8'));
 
 const logger = pino();
 
 export const setupServer = () => {
   const app = express();
+
+  app.use('/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument, {
+      explorer: true,
+      swaggerOptions: { docExpansion: 'none' }
+    })
+  );
 
 
 app.get('/', (req, res) => {
@@ -43,11 +52,11 @@ app.get('/', (req, res) => {
 
   app.use('/api-docs', apiDocsRouter);
 
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    logger.info(`Server is running on port ${PORT}`);
+      logger.info(`Server is running on port ${PORT}`);
+    logger.info(`Swagger UI доступний за http://localhost:${PORT}/api-docs`);
   });
 };
 

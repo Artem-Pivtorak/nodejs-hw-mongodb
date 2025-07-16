@@ -1,29 +1,60 @@
-post:
-  tags:
-    - Auth
-  summary: Реєстрація нового користувача
-  operationId: registerUser
-  requestBody:
-    description: Дані користувача для реєстрації
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - email
-            - password
-          properties:
-            email:
-              type: string
-              format: email
-              example: user@example.com
-            password:
-              type: string
-              format: password
-              example: P@ssw0rd123
-  responses:
-    '201':
-      description: Користувач успішно зареєстрований
-    '400':
-      description: Невірні дані або користувач вже існує
+  post:
+    tags:
+      - Auth
+    summary: Реєстрація користувача
+    operationId: registerUser
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+    responses:
+      '201':
+        description: Користувача успішно зареєстровано
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  example: 201
+                message:
+                  type: string
+                  example: Successfully registered a user!
+                data:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: "64e2a1f8e1234567890abcd"
+                    name:
+                      type: string
+                      example: "Іван"
+                    email:
+                      type: string
+                      format: email
+                      example: "ivan@example.com"
+      '409':
+        description: Email вже використовується
+        content:
+          application/json:
+            schema:
+              $ref: '../../../docs/components/schemas/Error.yaml'
+      '400':
+        description: Некоректні дані запиту
+        content:
+          application/json:
+            schema:
+              $ref: '../../../docs/components/schemas/Error.yaml'

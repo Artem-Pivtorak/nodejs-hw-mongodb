@@ -1,47 +1,77 @@
-patch:
   tags:
     - Contacts
-  summary: Update contact
+  summary: Оновити контакт за ID
   operationId: updateContact
-  description: Updates the contact with given ID.
   security:
     - bearerAuth: []
   parameters:
     - name: contactId
       in: path
       required: true
+      description: ID контакту
       schema:
         type: string
-      description: Contact ID
   requestBody:
     required: true
     content:
-      multipart/form-data:
+      application/json:
         schema:
           type: object
           properties:
             name:
               type: string
-              example: Jane Doe
-            phoneNumber:
-              type: string
-              example: "+1234567899"
             email:
               type: string
-              example: jane.doe@example.com
-            photo:
+              format: email
+            phone:
               type: string
-              format: binary
+            isFavourite:
+              type: boolean
+              description: Чи додано контакт в улюблені
+            contactType:
+              type: string
+              enum: [personal, business]
+              description: Тип контакту
+
   responses:
     '200':
-      description: Contact updated successfully
+      description: Контакт успішно оновлено
       content:
         application/json:
           schema:
-            $ref: ../../components/schemas/Contact.yaml
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: Successfully patched a contact!
+              data:
+                $ref: '../../../../docs/components/schemas/Contact.yaml'
     '404':
-      description: Contact not found
+      description: Контакт не знайдено
       content:
         application/json:
           schema:
-            $ref: ../../components/schemas/Error.yaml
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Contact not found
+    '401':
+      description: Неавторизований доступ
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Unauthorized

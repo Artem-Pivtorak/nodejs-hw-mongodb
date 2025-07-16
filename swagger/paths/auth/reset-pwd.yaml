@@ -1,43 +1,48 @@
-post:
-  tags:
-    - Auth
-  summary: Reset password
-  operationId: resetPassword
-  description: Resets the password using token from the email link.
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            token:
-              type: string
-              example: JWT.token.here
-            newPassword:
-              type: string
-              format: password
-              example: newStrongPassword123
-          required:
-            - token
-            - newPassword
-  responses:
-    '200':
-      description: Password reset successfully
+  post:
+    tags:
+      - Auth
+    summary: Скинути пароль
+    operationId: resetPassword
+    requestBody:
+      required: true
       content:
         application/json:
           schema:
             type: object
+            required:
+              - token
+              - newPassword
             properties:
-              status:
-                type: integer
-                example: 200
-              message:
+              token:
                 type: string
-                example: Password reset successfully
-    '400':
-      description: Invalid or expired token
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/Error.yaml
+              newPassword:
+                type: string
+    responses:
+      '200':
+        description: Пароль успішно змінено
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: Password has been successfully reset.
+                data:
+                  type: object
+                  example: {}
+      '401':
+        description: Невірний або прострочений токен
+        content:
+          application/json:
+            schema:
+              $ref: '../../../docs/components/schemas/Error.yaml'
+      '404':
+        description: Користувача не знайдено
+        content:
+          application/json:
+            schema:
+              $ref: '../../../docs/components/schemas/Error.yaml'

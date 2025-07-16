@@ -1,11 +1,12 @@
-get:
-  summary: Get current user info
-  responses:
-    '200':
-      description: Current user data
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/User.yaml
-    '401':
-      description: Unauthorized
+  get:
+    tags:
+      - Auth
+    summary: Отримати поточного користувача
+    operationId: getCurrentUser
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Дані поточного користувача
+      '401':
+        description: Неавторизований доступ

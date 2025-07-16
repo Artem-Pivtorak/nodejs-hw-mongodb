@@ -1,24 +1,42 @@
-delete:
   tags:
     - Contacts
-  summary: Delete a contact
+  summary: Видалити контакт за ID
   operationId: deleteContact
-  description: Deletes a contact by its ID.
   security:
     - bearerAuth: []
   parameters:
     - name: contactId
       in: path
       required: true
+      description: ID контакту
       schema:
         type: string
-      description: The ID of the contact to delete
   responses:
     '204':
-      description: Contact deleted successfully
+      description: Контакт успішно видалено (без тіла)
     '404':
-      description: Contact not found
+      description: Контакт не знайдено
       content:
         application/json:
           schema:
-            $ref: ../../components/schemas/Error.yaml
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Contact not found
+    '401':
+      description: Неавторизований доступ
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Unauthorized

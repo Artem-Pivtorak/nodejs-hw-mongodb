@@ -6,9 +6,19 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
+
 servers:
-  - url: http://localhost:3000
-  - url: https://nodejs-hw-mongodb-production-6f89.up.railway.app/
+  - url: https://nodejs-hw-mongodb-production-6f89.up.railway.app
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Contacts
+    description: Операції з контактами
+  - name: Auth
+    description: Авторизація користувачів
+
 paths:
   /auth/register:
     $ref: ../swagger/paths/auth/register.yaml
@@ -22,11 +32,13 @@ paths:
     $ref: ../swagger/paths/auth/send-reset-email.yaml
   /auth/reset-pwd:
     $ref: ../swagger/paths/auth/reset-pwd.yaml
+
   /contacts:
     get:
       $ref: ../swagger/paths/contacts/get.yaml
     post:
       $ref: ../swagger/paths/contacts/post.yaml
+
   /contacts/{contactId}:
     get:
       $ref: ../swagger/paths/contacts/{contactId}/get.yaml
@@ -34,8 +46,19 @@ paths:
       $ref: ../swagger/paths/contacts/{contactId}/patch.yaml
     delete:
       $ref: ../swagger/paths/contacts/{contactId}/delete.yaml
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+
+  schemas:
+    Contact:
+      $ref: ../docs/components/schemas/Contact.yaml
+    User:
+      $ref: ../docs/components/schemas/User.yaml
+    Error:
+      $ref: ../docs/components/schemas/Error.yaml
+
+

@@ -1,44 +1,74 @@
-post:
   tags:
     - Contacts
-  summary: Create a new contact
+  summary: Створити новий контакт
   operationId: createContact
-  description: Adds a new contact for the authenticated user.
   security:
     - bearerAuth: []
   requestBody:
     required: true
     content:
-      multipart/form-data:
+      application/json:
         schema:
           type: object
+          required:
+            - name
+            - email
+            - phone
           properties:
             name:
               type: string
-              example: John Doe
-            phoneNumber:
-              type: string
-              example: "+1234567890"
             email:
               type: string
               format: email
-              example: john.doe@example.com
-            photo:
+            phone:
               type: string
-              format: binary
-          required:
-            - name
-            - phoneNumber
+            isFavourite:
+              type: boolean
+              description: Чи додано контакт в улюблені
+            contactType:
+              type: string
+              enum: [personal, business]
+              description: Тип контакту
+
   responses:
     '201':
-      description: Contact created successfully
+      description: Контакт успішно створено
       content:
         application/json:
           schema:
-            $ref: ../../components/schemas/Contact.yaml
-    '400':
-      description: Validation error
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 201
+              message:
+                type: string
+                example: Successfully created a contact!
+              data:
+                $ref: '../../../docs/components/schemas/Contact.yaml'
+    '500':
+      description: Помилка завантаження фото
       content:
         application/json:
           schema:
-            $ref: ../../components/schemas/Error.yaml
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: Failed to upload photo to Cloudinary.
+    '401':
+      description: Неавторизований доступ
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Unauthorized

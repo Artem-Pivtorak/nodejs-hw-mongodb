@@ -1,5 +1,14 @@
 post:
-  summary: User logout
+  tags:
+    - Auth
+  summary: Вихід користувача
+  operationId: logoutUser
   responses:
     '204':
-      description: Logout successful
+      description: Успішно вийшли (cookies видалені)
+    '401':
+      description: Відсутня сесія в cookies
+      content:
+        application/json:
+          schema:
+            $ref: '../../../docs/components/schemas/Error.yaml'

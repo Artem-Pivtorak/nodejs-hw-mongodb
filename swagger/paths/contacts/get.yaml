@@ -1,28 +1,93 @@
-get:
-  tags:
-    - Contacts
-  summary: Get contact by ID
-  operationId: getContactById
-  description: Retrieve a single contact by its unique ID.
-  security:
-    - bearerAuth: []
-  parameters:
-    - name: contactId
-      in: path
-      required: true
-      description: The ID of the contact to retrieve
-      schema:
-        type: string
-  responses:
-    '200':
-      description: Contact found successfully
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/Contact.yaml
-    '404':
-      description: Contact not found
-      content:
-        application/json:
-          schema:
-            $ref: ../../components/schemas/Error.yaml
+tags:
+  - Contacts
+summary: Отримати список контактів
+operationId: getContacts
+security:
+  - bearerAuth: []
+parameters:
+  - name: page
+    in: query
+    schema:
+      type: integer
+      default: 1
+    description: Номер сторінки
+  - name: perPage
+    in: query
+    schema:
+      type: integer
+      default: 10
+    description: Кількість контактів на сторінці
+  - name: sortBy
+    in: query
+    schema:
+      type: string
+      default: name
+    description: Поле для сортування (name, email)
+  - name: sortOrder
+    in: query
+    schema:
+      type: string
+      enum:
+        - asc
+        - desc
+      default: asc
+    description: Напрям сортування (asc або desc)
+  - name: type
+    in: query
+    schema:
+      type: string
+    description: Тип контакту (особистий, робочий)
+  - name: isFavourite
+    in: query
+    schema:
+      type: boolean
+    description: Фільтр улюблених контактів
+responses:
+  '200':
+    description: Список контактів успішно отримано
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found contacts!
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '../../../docs/components/schemas/Contact.yaml'
+                page:
+                  type: integer
+                  example: 1
+                perPage:
+                  type: integer
+                  example: 10
+                totalItems:
+                  type: integer
+                  example: 25
+                totalPages:
+                  type: integer
+                  example: 3
+                hasPreviousPage:
+                  type: boolean
+                  example: false
+                hasNextPage:
+                  type: boolean
+                  example: true
+  '401':
+    description: Неавторизований доступ
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Unauthorized

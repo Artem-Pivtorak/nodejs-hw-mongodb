@@ -5,7 +5,5 @@ properties:
     example: 400
   message:
     type: string
-    example: Invalid request parameters
-required:
-  - status
-  - message
+    example: "Bad Request"
+
