@@ -570,24 +570,28 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "required": [
                   "name",
-                  "email",
-                  "phone"
+                  "phoneNumber",
+                  "contactType"
                 ],
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 20
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 20
                   },
                   "email": {
                     "type": "string",
                     "format": "email"
-                  },
-                  "phone": {
-                    "type": "string"
                   },
                   "isFavourite": {
                     "type": "boolean",
@@ -596,8 +600,9 @@
                   "contactType": {
                     "type": "string",
                     "enum": [
-                      "personal",
-                      "business"
+                      "work",
+                      "home",
+                      "personal"
                     ],
                     "description": "Тип контакту"
                   }
@@ -787,19 +792,23 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 20
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 20
                   },
                   "email": {
                     "type": "string",
                     "format": "email"
-                  },
-                  "phone": {
-                    "type": "string"
                   },
                   "isFavourite": {
                     "type": "boolean",
@@ -808,8 +817,9 @@
                   "contactType": {
                     "type": "string",
                     "enum": [
-                      "personal",
-                      "business"
+                      "work",
+                      "home",
+                      "personal"
                     ],
                     "description": "Тип контакту"
                   }
