@@ -7,23 +7,29 @@
   requestBody:
     required: true
     content:
-      multipart/form-data:
+      application/json:
         schema:
           type: object
           required:
             - name
-            - phoneNumber
+            - email
+            - phone
           properties:
             name:
               type: string
             email:
               type: string
               format: email
-            phoneNumber:
+            phone:
               type: string
-            photo:
+            isFavourite:
+              type: boolean
+              description: Чи додано контакт в улюблені
+            contactType:
               type: string
-              format: binary
+              enum: [personal, business]
+              description: Тип контакту
+
   responses:
     '201':
       description: Контакт успішно створено
