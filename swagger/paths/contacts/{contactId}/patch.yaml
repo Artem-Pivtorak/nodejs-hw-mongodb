@@ -36,6 +36,11 @@
               type: string
               enum: [work, home, personal]
               description: Тип контакту
+            photo:
+                type: string
+                format: binary
+                description: Фото контакту
+
 
   responses:
     '200':
