@@ -46,6 +46,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.4",
     "pino": "^9.7.0",
+    "swagger-ui-dist": "^5.27.0",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"
   }
